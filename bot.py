@@ -2,10 +2,11 @@ import wikipedia
 import telebot
 
 from db import dbbot
-dbbot = dbbot('based.db')
+from config import BOT_TOKEN, DB_NAME
+dbbot = dbbot(DB_NAME)
+dbbot.table_create()
 
-bot = telebot.TeleBot('5705397083:AAG5XFQ0ZN_vNgsd2B1HgQSym7ouPSgBfSY')
-
+bot = telebot.TeleBot(BOT_TOKEN)
 
 def getwiki(msg, lang):
     wikipedia.set_lang(lang)
@@ -51,19 +52,16 @@ def bot_menu_choose(message):
         if message.text == '🇷🇺RUSSIAN':
             bot.send_message(message.chat.id,
                      'Бот начал свою работу! Отправьте в чат слово, определение которого хотите узнать.', )
-
             dbbot.change_user_lang(message.from_user.id, "ru")
             
 
         elif message.text == '🇺🇸ENGLISH(US)':
             bot.send_message(message.chat.id,
                      'Bot has begun its work! Send to the chat the word whose definition you want to know.', )
-
             dbbot.change_user_lang(message.from_user.id, "en")
 
         else:
             ulang = dbbot.get_user_lang(message.from_user.id)
-            print(ulang)
             bot.send_message(message.chat.id, getwiki(message.text, ulang))
 
 bot.polling(none_stop=True)

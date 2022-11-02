@@ -9,6 +9,12 @@ class dbbot:
 		result = self.cursor.execute("SELECT `uid` FROM `lang` WHERE `uid` = ?", (user_id,))
 		return bool(len(result.fetchall()))
 
+	def table_create(self):
+		self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='lang'")
+		if(not (bool(self.cursor.fetchall()))):
+			self.cursor.execute("CREATE TABLE lang (uid INTEGER UNIQUE  NOT NULL,value STRING  DEFAULT ru  NOT NULL);")
+			self.conn.commit()
+
 	def printlang(self, user_id):
 		self.cursor.execute("SELECT `value` FROM `lang` WHERE `uid` = ?", (user_id,))
 		practic = self.cursor.fetchone()
